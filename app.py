@@ -10,25 +10,26 @@ time_out = 5000
 ms = 1 / 1000
 
 
-@app.route('/create', methods=['POST'])
-def create():
-    data = request.json
-
+@app.route('/create/<server>', methods=['GET'])
+def create(server):
     reply = 'No one want to play with you', 400
 
     try:
-        if data['server_name']:
-            games[data['server_name']] = {
+        if server:
+            games[server] = {
                 'ping': True,
                 'pong': False
             }
-            print(f'Creating Game {data["server_name"]}')
+            print(f'Creating Game {server}')
 
             cpt = 0
 
             while cpt < time_out * 2:
-                if games[data['server_name']]['pong']:
+                if games[server]['pong']:
                     return 'Someone want to play with you!', 200
+
+                cpt += 1
+                time.sleep(ms)
 
     except KeyError as e:
         reply = f'Bad Json... {e}', 422
@@ -38,7 +39,7 @@ def create():
     return reply
 
 
-@app.route('/ping/<server>', methods=['PUT'])
+@app.route('/ping/<server>', methods=['GET'])
 def ping(server):
     error = ''
     try:
@@ -57,10 +58,10 @@ def ping(server):
     except Exception as e:
         error = e
 
-    return f'ping? {error}', 400
+    return f'pong? {error}', 400
 
 
-@app.route('/pong/<server>', methods=['PUT'])
+@app.route('/pong/<server>', methods=['GET'])
 def pong(server):
     error = ''
     try:
