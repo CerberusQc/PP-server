@@ -20,7 +20,7 @@ def create(server):
                 'ping': True,
                 'pong': False
             }
-            print(f'Creating Game {server}')
+            print(f'Creating Game {server} from {request.remote_addr}')
 
             cpt = 0
 
@@ -42,6 +42,7 @@ def create(server):
 @app.route('/ping/<server>', methods=['GET'])
 def ping(server):
     error = ''
+    print(f'Ping from {request.remote_addr} on {server} ')
     try:
         games[server]['ping'] = True
         games[server]['pong'] = False
@@ -64,6 +65,7 @@ def ping(server):
 @app.route('/pong/<server>', methods=['GET'])
 def pong(server):
     error = ''
+    print(f'Pong from {request.remote_addr} on {server} ')
     try:
         games[server]['pong'] = True
         games[server]['ping'] = False
